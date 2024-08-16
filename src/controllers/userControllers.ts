@@ -7,8 +7,12 @@ const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret_key";
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
 interface UserRequest extends Request {
-  // Use `user?:` here instead of `user:`.
-  user?: any;
+  user?: {
+    user_id: string;
+    username: string;
+    password: string;
+    email: string;
+  };
 }
 
 class UserController {

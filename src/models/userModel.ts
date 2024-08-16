@@ -86,9 +86,3 @@ UserModel.init(
 );
 
 export default UserModel;
-
-//En TypeScript, cuando trabajas con Sequelize, es útil definir dos tipos distintos para los atributos de un modelo:
-
-// UserAttributes: Define todos los atributos que el modelo tendrá en la base de datos. Este tipo incluye todos los campos del modelo, tanto los obligatorios como los opcionales.
-
-// UserCreationAttributes: Define los atributos que son necesarios al momento de crear una nueva instancia del modelo. Generalmente, no necesitas especificar atributos como el id (en caso de ser generado automáticamente) o los campos de fecha de creación/actualización, ya que estos son gestionados automáticamente por Sequelize.

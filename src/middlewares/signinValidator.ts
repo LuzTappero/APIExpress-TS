@@ -6,8 +6,8 @@ const signInValidator = [
   body("username")
     .notEmpty()
     .withMessage("Username is required")
-    .isLength({ min: 3, max: 15 })
-    .withMessage("Username must be between 3 and 15 characters long")
+    .isLength({ min: 3})
+    .withMessage("Username must be between 3 characters")
     .custom(async (value) => {
       const existingUser = await UserModel.findOne({
         where: { username: value },
@@ -45,13 +45,9 @@ const signInValidator = [
     .withMessage("Password must contain at least a letter"),
 
   (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req).formatWith(({ msg }) => {
-      return {
-        msg,
-      };
-    });
+    const errors = validationResult(req).formatWith(({ msg }) => ({msg}))
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(403).json({ errors: errors.array() });
     }
     next();
   },
