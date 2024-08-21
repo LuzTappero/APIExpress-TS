@@ -61,21 +61,28 @@ class UserController {
     }
   }
   static async login(
-    req: Request,
+    req: UserRequest,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     const { username, password } = req.body;
     try {
-      const user = await UserModel.authenticate(username, password);
+      const user = await UserModel.findOne({ where: { username } });
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        throw new Error("Incorrect password");
+      }
       const token = jwt.sign(
         { userId: user.user_id, username: user.username },
         JWT_SECRET,
         { expiresIn: JWT_EXPIRATION }
       );
       res.status(201).json({ message: "Login successful", token });
-    } catch (error) {
-      next();
+    } catch(error){
+      next(error);
     }
   }
   static async checkAuth(
@@ -90,12 +97,10 @@ class UserController {
       }
       const userId = req.user.user_id;
       const user = await UserModel.findByPk(userId);
-
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }
-
       res.status(200).json({
         isAuthenticated: true,
         user: {
@@ -108,29 +113,6 @@ class UserController {
       next(error);
     }
   }
-  // static async getUserInfo(
-  //   req: UserRequest,
-  //   res: Response,
-  //   next: NextFunction
-  // ){
-  //   try {
-  //     const userId = req.user.user_id;
-  //     if (!userId) {
-  //       return res.status(400).json({ message: "User ID not found" });
-  //     }
-  //     const user = await UserModel.findByPk(userId, {
-  //       attributes: ["username", "email"],
-  //     });
-  //     if (!user) {
-  //       res.status(404).json({ message: "User not found" });
-  //       return;
-  //     }
-  //     res.json(user);
-  //   } catch (error) {
-  //     console.error("Error fetching user info:", error);
-  //     res.status(500).json({ message: "Server error" });
-  //   }
-  //}
   static async logout(
     req: Request,
     res: Response,

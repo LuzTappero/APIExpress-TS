@@ -23,25 +23,6 @@ class UserModel
   public email!: string;
   public created_at?: Date;
   public updated_at?: Date;
-
-  static async authenticate(
-    username: string,
-    password: string
-  ): Promise<UserModel> {
-    try {
-      const user = await this.findOne({ where: { username } });
-      if (!user) {
-        throw new Error("User not found");
-      }
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (!passwordMatch) {
-        throw new Error("Incorrect password");
-      }
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  }
 }
 
 UserModel.init(

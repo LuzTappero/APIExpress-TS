@@ -7,7 +7,7 @@ const signInValidator = [
     .notEmpty()
     .withMessage("Username is required")
     .isLength({ min: 3})
-    .withMessage("Username must be between 3 characters")
+    .withMessage("Username must be at least 3 characters long")
     .custom(async (value) => {
       const existingUser = await UserModel.findOne({
         where: { username: value },
@@ -39,15 +39,20 @@ const signInValidator = [
     .withMessage("Must have strings")
     .isLength({ min: 8 })
     .withMessage("The password must be at least 8 characters long")
+    .matches(/[a-z]/)
+    .withMessage("Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/)
+    .withMessage("Password must contain at least one uppercase letter")
     .matches(/\d/)
     .withMessage("Password must contain at least a number")
     .matches(/[a-zA-Z]/)
     .withMessage("Password must contain at least a letter"),
 
   (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req).formatWith(({ msg }) => ({msg}))
+    const errors = validationResult(req)
+    console.log(errors)
     if (!errors.isEmpty()) {
-      return res.status(403).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
     next();
   },

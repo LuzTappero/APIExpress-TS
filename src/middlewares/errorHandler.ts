@@ -33,9 +33,7 @@ const errorHandler = (
   console.error(err instanceof Error ? err.stack : "Unknown error");
 
   if (err && typeof err === 'object' && 'errors' in err) {
-    const validationErrors = (err as { errors: Array<{ msg: string }> }).errors.map(
-      (error) => error.msg
-    );
+    const validationErrors = (err as { errors: Array<{ msg: string }> }).errors;
     res.status(400).json({ message: "Validation failed", errors: validationErrors });
     return;
   }

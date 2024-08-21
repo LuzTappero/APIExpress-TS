@@ -33,11 +33,11 @@ const corsOptions ={
 }
 app.use(cors(corsOptions))
 
-app.use(errorHandler);
 
 app.use('/user', userRoutes)
 app.use('/products', productRoutes)
 
+app.use(errorHandler);
 
 const PORT= process.env.PORT
 app.listen(PORT, ()=>{console.log(`Listening on PORT ${PORT}`)})
