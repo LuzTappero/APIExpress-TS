@@ -19,8 +19,8 @@ async function testConnection() {
     await sequelize.authenticate();
     console.log("Connection to database ok");
 
-    // await sequelize.sync({ alter: true });
-    // console.log("Database synchronized");
+    await sequelize.sync({ force: false });
+    console.log("Database synchronized");
   } catch (err) {
     console.error("Error connecting to the database:", err);
   }

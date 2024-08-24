@@ -10,6 +10,9 @@ class ProductController {
   ): Promise<void> {
     try {
       const products = await ProductModel.findAll();
+      if (!products){
+        throw new Error ('Product not found')
+      }
       res.status(200).json({ message: "Get all products", products });
     } catch (error) {
       next(error);
@@ -21,10 +24,10 @@ class ProductController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id
       const product = await ProductModel.findByPk(id);
       if (!product) {
-        res.status(404).json({ message: "Product not found" });
+        throw new Error ('Product not found')
       }
       res.status(200).json({ message: "Get products by Id ", product });
     } catch (error) {

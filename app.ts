@@ -8,6 +8,7 @@ const app = express()
 import errorHandler from './src/middlewares/errorHandler';
 import userRoutes from './src/routes/userRoutes';
 import productRoutes from './src/routes/productRoutes';
+import categoryRoutes from './src/routes/categoryRoutes';
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
@@ -36,6 +37,7 @@ app.use(cors(corsOptions))
 
 app.use('/user', userRoutes)
 app.use('/products', productRoutes)
+app.use('/categories', categoryRoutes)
 
 app.use(errorHandler);
 

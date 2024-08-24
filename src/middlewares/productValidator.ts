@@ -18,11 +18,18 @@ const validateProduct = [
         throw new Error("Product name already exists");
       }
     }),
-  body("category")
+  body("description")
+    .notEmpty()
+    .withMessage("Product description is required")
+    .isString()
+    .withMessage("Description must be a string")
+    .isLength({ max: 1000 })
+    .withMessage("Description cannot be more than 1000 characters"),
+  body("category_id")
     .notEmpty()
     .withMessage("Product category is required")
-    .isString()
-    .withMessage("Product category must be a string")
+    .isNumeric()
+    .withMessage("Product category must be a number")
     .isLength({ max: 50 })
     .withMessage("Product category cannot be more than 50 characters"),
   body("price")
