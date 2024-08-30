@@ -2,12 +2,11 @@ import express from "express";
 const userRoutes = express.Router();
 import UserController from "../controllers/userControllers";
 import signInValidator from "../middlewares/signinValidator";
-import { authenticateToken } from "../middlewares/authToken";
+import { verifyToken } from "../middlewares/verifyToken"
 
 userRoutes.get("/", UserController.getAll);
 userRoutes.get("/id/:id", UserController.getById);
-userRoutes.get("/checkAuth", authenticateToken, UserController.checkAuth);
-
+userRoutes.get("/protectedRoute", verifyToken, UserController.profile)
 userRoutes.post("/register", signInValidator, UserController.registerUser);
 userRoutes.post("/login", UserController.login);
 userRoutes.post("/logout", UserController.logout);

@@ -1,17 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import UserModel from "../models/userModel";
 import bcrypt, { hash } from "bcrypt";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret_key";
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
+import { login } from "../utils/login";
+import { signToken } from "../utils/signToken"
+import { Jwt } from "jsonwebtoken";
 
 interface UserRequest extends Request {
   user?: {
     user_id: string;
     username: string;
-    password: string;
-    email: string;
+    password?: string;
+    email?: string;
+    role: 'admin' | 'client';
   };
 }
 
@@ -52,9 +52,9 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { username, password, email } = req.body;
+      const { username, password, email, role } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
-      await UserModel.create({ username, password: hashedPassword, email });
+      await UserModel.create({ username, password: hashedPassword, email, role });
       res.status(201).json({ message: "Registration successful" });
     } catch (error) {
       next(error);
@@ -65,54 +65,36 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const { username, password } = req.body;
     try {
-      const user = await UserModel.findOne({ where: { username } });
-      if (!user) {
-        throw new Error("User not found");
-      }
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (!passwordMatch) {
-        throw new Error("Incorrect password");
-      }
-      const token = jwt.sign(
-        { userId: user.user_id, username: user.username },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRATION }
-      );
-      res.status(201).json({ message: "Login successful", token });
-    } catch(error){
+      const { username, password } = req.body;
+      const user = await login(username, password)
+      const token= signToken(user)
+      res.status(201).json({ message: "Login successful", token});
+    } catch (error) {
       next(error);
     }
   }
-  static async checkAuth(
+  static async profile(
     req: UserRequest,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      if (!req.user) {
-        res.status(401).json({ message: "Unauthorized" });
-        return;
-      }
-      const userId = req.user.user_id;
-      const user = await UserModel.findByPk(userId);
-      if (!user) {
-        res.status(404).json({ message: "User not found" });
-        return;
-      }
-      res.status(200).json({
-        isAuthenticated: true,
-        user: {
-          id: user.user_id,
+      const user = await UserModel.findByPk(req.params.id);
+      if (user){
+        res.json({
           username: user.username,
           email: user.email,
-        },
-      });
-    } catch (error) {
-      next(error);
+          role: user.role
+        })
+      }else {
+        res.status(404).json({ message: 'User not found' });
+      }
+    }catch(error){
+      console.error(error)
+      next()
     }
-  }
+}
   static async logout(
     req: Request,
     res: Response,

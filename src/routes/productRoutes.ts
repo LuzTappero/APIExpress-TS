@@ -13,6 +13,6 @@ productRoutes.get("/:price", ProductController.getByPrice);
 productRoutes.post("/create", validateProduct, ProductController.create);
 
 productRoutes.delete("/:id", ProductController.delete);
-productRoutes.patch("/:id", ProductController.update);
+productRoutes.patch("/:id",validateProduct, ProductController.update);
 
 export default productRoutes;

@@ -7,11 +7,12 @@ interface UserAttributes {
   username: string;
   password: string;
   email: string;
+  role: 'admin'  | 'client';
   created_at?: Date;
   updated_at?: Date;
 }
 interface UserCreationAttributes
-  extends Optional<UserAttributes, "user_id" | "created_at" | "updated_at"> {}
+  extends Optional<UserAttributes, "user_id" | "created_at" | "updated_at"| "role" > {}
 
 class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
@@ -21,6 +22,7 @@ class UserModel
   public username!: string;
   public password!: string;
   public email!: string;
+  public role!: 'admin'  | 'client';
   public created_at?: Date;
   public updated_at?: Date;
 }
@@ -46,6 +48,11 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    role:{
+      type: DataTypes.ENUM('admin', 'client'),
+      allowNull: false,
+      defaultValue: 'client',
     },
     created_at: {
       type: DataTypes.DATE,
