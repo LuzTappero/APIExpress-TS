@@ -1,8 +1,8 @@
 import UserModel from "../models/userModel";
 import bcrypt, { hash } from "bcrypt";
 
-export async function login(username:string, password:string){
-    const user = await UserModel.findOne({ where: { username } });
+export async function login(email:string, password:string){
+    const user = await UserModel.findOne({ where: { email } });
     if (!user) {
         throw new Error("User not found");
     }

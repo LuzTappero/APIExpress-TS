@@ -6,7 +6,7 @@ const signInValidator = [
   body("username")
     .notEmpty()
     .withMessage("Username is required")
-    .isLength({ min: 3})
+    .isLength({ min: 3 })
     .withMessage("Username must be at least 3 characters long")
     .custom(async (value) => {
       const existingUser = await UserModel.findOne({
@@ -49,8 +49,8 @@ const signInValidator = [
     .withMessage("Password must contain at least a letter"),
 
   (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req)
-    console.log(errors)
+    const errors = validationResult(req);
+    console.log(errors);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }

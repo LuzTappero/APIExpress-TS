@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "express-validator";
 
 interface ErrorMessages {
   [key: string]: { status: number; message: string };
@@ -7,7 +6,11 @@ interface ErrorMessages {
 
 const errorMessages: ErrorMessages = {
   "User not found": { status: 404, message: "User not found" },
-  "Incorrect password": { status: 401, message: "Incorrect password" },
+  "Incorrect password": {
+    status: 401,
+    message: "Incorrect password",
+  },
+
   "ID is required": { status: 400, message: "ID is required" },
   "That username already exists": {
     status: 400,
@@ -18,10 +21,25 @@ const errorMessages: ErrorMessages = {
     status: 409,
     message: "That email already exists",
   },
-  "Error logging out": { status: 500, message: "Error logging out" },
-  Unauthorized: { status: 401, message: "Unauthorized" },
-  "Product not found": { status: 404, message: "Product not found" },
-  "Invalid credentials": { status: 401, message: "Invalid credentials" },
+  "Error logging out": {
+    status: 500,
+    message: "Error logging out",
+  },
+
+  Unauthorized: {
+    status: 401,
+    message: "Unauthorized",
+  },
+
+  "Product not found": {
+    status: 404,
+    message: "Product not found",
+  },
+
+  "Invalid credentials": {
+    status: 401,
+    message: "Invalid credentials",
+  },
 };
 
 const errorHandler = (
@@ -32,9 +50,11 @@ const errorHandler = (
 ): void => {
   console.error(err instanceof Error ? err.stack : "Unknown error");
 
-  if (err && typeof err === 'object' && 'errors' in err) {
+  if (err && typeof err === "object" && "errors" in err) {
     const validationErrors = (err as { errors: Array<{ msg: string }> }).errors;
-    res.status(400).json({ message: "Validation failed", errors: validationErrors });
+    res
+      .status(400)
+      .json({ message: "Validation failed", errors: validationErrors });
     return;
   }
 
@@ -44,7 +64,6 @@ const errorHandler = (
     status: 500,
     message: "Internal Server Error",
   };
-
   res.status(errorResponse.status).json({ message: errorResponse.message });
 };
 

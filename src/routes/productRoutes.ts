@@ -1,8 +1,7 @@
 import express from "express";
 import ProductController from "../controllers/productControllers";
-const productRoutes = express.Router();
-ProductController;
 import validateProduct from "../middlewares/productValidator";
+const productRoutes = express.Router();
 
 productRoutes.get("/", ProductController.getAll);
 productRoutes.get("/:id", ProductController.getById);

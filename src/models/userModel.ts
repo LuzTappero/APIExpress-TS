@@ -1,6 +1,5 @@
 import { Sequelize, UUIDV4, DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/sqlConfig";
-import bcrypt from "bcrypt";
 
 interface UserAttributes {
   user_id: string;
@@ -73,4 +72,4 @@ UserModel.init(
   }
 );
 
-export default UserModel;
+export default UserModel

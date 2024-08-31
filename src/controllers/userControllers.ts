@@ -3,7 +3,6 @@ import UserModel from "../models/userModel";
 import bcrypt, { hash } from "bcrypt";
 import { login } from "../utils/login";
 import { signToken } from "../utils/signToken"
-import { Jwt } from "jsonwebtoken";
 
 interface UserRequest extends Request {
   user?: {
@@ -26,7 +25,7 @@ class UserController {
       if (!users) {
         return next(new Error("User not found"));
       }
-      res.status(200).send(users);
+      res.status(200).json(users);
     } catch (error) {
       next(error);
     }
@@ -41,8 +40,8 @@ class UserController {
       if (!user) {
         return next(new Error("User not found"));
       }
-      res.status(200).send(user);
-    } catch (error) {
+      res.status(200).json(user);
+    } catch (error){
       next(error);
     }
   }
@@ -65,35 +64,15 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    try {
-      const { username, password } = req.body;
-      const user = await login(username, password)
-      const token= signToken(user)
-      res.status(201).json({ message: "Login successful", token});
-    } catch (error) {
-      next(error);
-    }
+  try {
+    const { email, password } = req.body;
+    const user = await login(email, password)
+    const token= signToken(user)
+    res.status(201).json({ message: "Login successful", token});
+  } catch (error) {
+    console.log(error)
+    next(error);
   }
-  static async profile(
-    req: UserRequest,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const user = await UserModel.findByPk(req.params.id);
-      if (user){
-        res.json({
-          username: user.username,
-          email: user.email,
-          role: user.role
-        })
-      }else {
-        res.status(404).json({ message: 'User not found' });
-      }
-    }catch(error){
-      console.error(error)
-      next()
-    }
 }
   static async logout(
     req: Request,

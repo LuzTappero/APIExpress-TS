@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, where, Optional } from "sequelize";
+import { Sequelize, DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/sqlConfig";
 
 
