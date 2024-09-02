@@ -40,6 +40,7 @@ export class ProfileModel
         },
         user_id: {
         type: DataTypes.UUID,
+        unique:true,
         allowNull: false,
         references: {
             model: "users", 
@@ -49,7 +50,7 @@ export class ProfileModel
         },
         address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         },
         phone: {
         type: DataTypes.STRING,

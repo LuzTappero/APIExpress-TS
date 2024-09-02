@@ -19,7 +19,7 @@ export async function verifyToken(req: UserRequest,
 ): Promise<void> {
   try{
     const authHeader = req.headers["authorization"]
-    console.log("Authorization Header:", req.headers['authorization']);
+    console.log("Authorization Header:", authHeader);
     const token= authHeader && authHeader.split(" ")[1]
     if (!token){
       res.status(401).json({message: 'Access not authorized'})
