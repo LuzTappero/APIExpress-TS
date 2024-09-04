@@ -1,6 +1,6 @@
 import { body, validationResult } from "express-validator";
 import { Express, Request, Response, NextFunction } from "express";
-import UserModel from "../models/userModel";
+import { UserModel } from "../models/userModel";
 
 const signInValidator = [
   body("username")
@@ -8,6 +8,10 @@ const signInValidator = [
     .withMessage("Username is required")
     .isLength({ min: 3 })
     .withMessage("Username must be at least 3 characters long")
+    .matches(/^[a-zA-Z0-9]+$/)
+    .withMessage("Username must not contain special characters or spaces")
+    .isLength({ max: 15})
+    .withMessage("Username must be a maximum of 15 characters long")
     .custom(async (value) => {
       const existingUser = await UserModel.findOne({
         where: { username: value },
@@ -21,8 +25,8 @@ const signInValidator = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email format")
-    .isLength({ max: 100 })
-    .withMessage("Email cannot be more than 100 characters")
+    .isLength({ max: 35 })
+    .withMessage("Email cannot be more than 35 characters")
     .custom(async (value) => {
       const existingEmail = await UserModel.findOne({
         where: { email: value },
@@ -46,8 +50,8 @@ const signInValidator = [
     .matches(/\d/)
     .withMessage("Password must contain at least a number")
     .matches(/[a-zA-Z]/)
-    .withMessage("Password must contain at least a letter"),
-
+    .withMessage("Password must contain at least a letter")  .matches(/[!@#$%^&*(),.?":{}|<>]/)
+    .withMessage("Password must contain at least one special character"),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     console.log(errors);

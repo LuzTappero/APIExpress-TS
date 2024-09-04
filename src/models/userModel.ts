@@ -13,7 +13,7 @@ interface UserAttributes {
 interface UserCreationAttributes
   extends Optional<UserAttributes, "user_id" | "created_at" | "updated_at"| "role" > {}
 
-class UserModel
+  export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
@@ -72,4 +72,3 @@ UserModel.init(
   }
 );
 
-export default UserModel

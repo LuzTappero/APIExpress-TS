@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { OrderModel } from '../models/orderModel';
 import { OrderItemModel } from '../models/orderItemModel';
+import { ProductModel } from '../models/productModel';
+
+interface CustomRequest extends Request{
+    user?: {
+        user_id: string;
+}
+}
+
 
 class OrderController {
     static async saveCart(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -17,7 +25,6 @@ class OrderController {
                 user_id,
                 delivery_option,
                 total_price,
-                status: 'pending', 
             });
             const orderItems = cartItems.map((item: any) => ({
                 order_id: order.order_id,
@@ -33,6 +40,36 @@ class OrderController {
         console.error('Error saving order:', error);
         res.status(500).json({ message: 'Failed to save order.' });
     }
+    }
+    static async getUserPurchases(req: CustomRequest, res: Response): Promise<void>{
+        try{
+            const userId = req.user?.user_id;
+            const userOrders = await OrderModel.findAll({
+                where: {user_id : userId},
+                include:[
+                    {
+                        model: OrderItemModel,
+                        include:[
+                            {
+                                model: ProductModel,
+                                attributes: ['name', 'description']
+                            }
+                        ]
+                    }
+                ]
+            })
+            if (!userOrders || userOrders.length === 0) {
+                res.status(404).json({ message: 'No purchases found for this user.' });
+                return
+            } 
+            console.log(userOrders)
+            res.status(200).json(userOrders);
+            return
+        }catch(error){
+            console.error(error);
+                res.status(500).json({ message: 'Error fetching user purchases.' });
+                return
+        }
     }
 }
 

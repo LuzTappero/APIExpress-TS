@@ -132,9 +132,8 @@ static async updateProfile(
         }
     } catch (error) {
         next(error);
-    }
-}
-
+    } 
+  }
 }
 
 export default ProfileController;

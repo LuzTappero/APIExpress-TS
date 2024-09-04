@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { Sequelize } from "sequelize";
 
+
 const sequelize = new Sequelize(
   process.env.DB_NAME as string,
   process.env.DB_USER as string,
@@ -18,7 +19,6 @@ async function testConnection() {
   try {
     await sequelize.authenticate();
     console.log("Connection to database ok");
-
     await sequelize.sync({ force: false });
     console.log("Database synchronized");
   } catch (err) {

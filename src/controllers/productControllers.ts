@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductModel } from "../models/productModel";
+import axios from "axios";
+
 
 
 class ProductController {
@@ -88,7 +90,18 @@ class ProductController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { name, description, price, imagePath, category_id } = req.body;
+      const { name, description, price, category_id } = req.body;
+      const imageFile = req.file; 
+      let imagePath = '';
+      console.log('imageFile:',imageFile)
+  
+      if (imageFile) {
+        imagePath = `images/${imageFile.filename}`;
+      }else{
+        console.log('Error: imagePath:', imagePath)
+      }
+
+
       await ProductModel.create({
         name,
         description,

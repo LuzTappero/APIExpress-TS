@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import UserModel from "../models/userModel";
 import bcrypt, { hash } from "bcrypt";
 import { login } from "../utils/login";
 import { signToken } from "../utils/signToken"
+import { UserModel } from "../models/userModel";
 
 interface UserRequest extends Request {
   user?: {

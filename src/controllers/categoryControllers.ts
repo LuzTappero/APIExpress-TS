@@ -42,7 +42,7 @@ class CategoryController{
         try{ 
             const { name } = req.body;
             const category = await CategoryModel.create({ name });
-            res.status(200).json({message: 'Category created successfully'});
+            res.status(200).json({category});
     }catch (error) {
         next(error)
     }

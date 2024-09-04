@@ -1,4 +1,4 @@
-import UserModel from "../models/userModel";
+import { UserModel } from "../models/userModel";
 import bcrypt, { hash } from "bcrypt";
 
 export async function login(email:string, password:string){

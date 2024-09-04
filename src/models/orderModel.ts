@@ -1,14 +1,13 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/sqlConfig";
-import UserModel from "./userModel";
-
+import { UserModel } from "./userModel";
+import { OrderItemModel } from "./orderItemModel";
 
 interface OrderAttributes {
     order_id: number;
     user_id: string;
     delivery_option: string;
     total_price: number;
-    status: 'pending' | 'completed' | 'cancelled';
     created_at?: Date;
     updated_at?: Date;
 }
@@ -22,7 +21,6 @@ export class OrderModel extends Model<OrderAttributes, OrderCreationAttributes>
         public user_id!: string;
         public delivery_option!: string;
         public total_price!: number;
-        public status!: 'pending' | 'completed' | 'cancelled';
         public created_at?: Date;
         public updated_at?: Date;
     }
@@ -51,10 +49,6 @@ total_price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
 },
-status: {
-    type: DataTypes.ENUM('pending', 'completed', 'cancelled'),
-    defaultValue: 'pending',
-},
 },
 {
     sequelize,
@@ -64,4 +58,5 @@ status: {
     createdAt: "created_at",
     updatedAt: "updated_at",
 });
+
 

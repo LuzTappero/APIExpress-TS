@@ -6,7 +6,7 @@ import { ProductModel } from "./productModel";
 
 interface OrderItemAttributes {
     order_item_id: number;
-    order_id: string;
+    order_id: number;
     product_id: number;
     quantity: number;
     price: number;
@@ -20,7 +20,7 @@ export class OrderItemModel extends Model<OrderItemAttributes, OrderCreationAttr
     implements OrderItemAttributes
     {
         public order_item_id!: number;
-        public order_id!: string;
+        public order_id!: number;
         public product_id!: number;
         public quantity!: number;
         public price!: number;
@@ -37,7 +37,7 @@ OrderItemModel.init(
     primaryKey: true
 },
 order_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
     model: OrderModel,
@@ -53,7 +53,7 @@ product_id: {
     },
 },
 quantity:{
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull:false,
 },
 price: {
@@ -70,6 +70,3 @@ price: {
     updatedAt: "updated_at",
 });
 
-
-OrderItemModel.belongsTo(OrderModel, { foreignKey: 'order_id' });
-OrderModel.hasMany(OrderItemModel, { foreignKey: 'order_id' });
