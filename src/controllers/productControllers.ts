@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductModel } from "../models/productModel";
-import axios from "axios";
+import cloudinary from "../config/cloudinaryConfig";
+import streamifier from "streamifier";
 
 
 
@@ -89,19 +90,35 @@ class ProductController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+
     try {
       const { name, description, price, category_id } = req.body;
-      const imageFile = req.file; 
       let imagePath = '';
-      console.log('imageFile:',imageFile)
-  
-      if (imageFile) {
-        imagePath = `images/${imageFile.filename}`;
-      }else{
-        console.log('Error: imagePath:', imagePath)
+      if (req.file?.buffer) {
+        try {
+          // Subida de la imagen a Cloudinary usando un stream
+          const result = await new Promise<{ secure_url: string }>(
+            (resolve, reject) => {
+              const uploadStream = cloudinary.uploader.upload_stream(
+                { folder: "products" },
+                (error, result) => {
+                  if (error) reject(error);
+                  else if (result) resolve(result as { secure_url: string });
+                }
+              );
+              streamifier.createReadStream(req.file!.buffer).pipe(uploadStream);
+            }
+          );
+          imagePath = result.secure_url;
+          console.log("Image uploaded to Cloudinary:", imagePath);
+        } catch (uploadError) {
+          console.error("Error uploading to Cloudinary:", uploadError);
+          res.status(500).json({ error: "Error uploading image" });
+          return;
+        }
+      } else {
+        console.log("No file uploaded or file buffer is undefined.");
       }
-
-
       await ProductModel.create({
         name,
         description,

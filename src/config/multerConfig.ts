@@ -1,18 +1,24 @@
 import multer from 'multer';
-import FormData from 'form-data';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
+import path from "path";
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, '../../images'); // Cambia a la carpeta donde quieres guardar los archivos
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname)); // Guarda con un nombre único
+// Configuración del almacenamiento
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limita el tamaño del archivo a 5MB
+  fileFilter: (req, file, cb) => {
+    // Asegúrate de que el archivo sea una imagen
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    if (mimetype && extname) {
+      return cb(null, true);
     }
+    cb(new Error("Invalid file type. Only JPEG, PNG, and GIF are allowed."));
+  },
 });
 
-const upload = multer({ storage: storage });
-
-export default upload
+export default upload;
