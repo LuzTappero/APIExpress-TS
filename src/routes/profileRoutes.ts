@@ -11,12 +11,9 @@ profileRoutes.get("/byId/:profileId",verifyToken, ProfileController.getByUserId)
 
 profileRoutes.post("/create",verifyToken, ProfileController.createProfile)
 
-profileRoutes.delete("/:id",verifyToken, ProfileController.deleteProfile)
 profileRoutes.put("/:profile_id",verifyToken, ProfileController.updateProfile)
 
-
 profileRoutes.post("/saveCart", verifyToken, OrderController.saveCart)
-
 
 export default profileRoutes
 

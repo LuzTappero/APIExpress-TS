@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-const JWT_SECRET = process.env.JWT_SECRET as string ;
 import jwt, { JwtPayload } from "jsonwebtoken";
 
+
+const JWT_SECRET = process.env.JWT_SECRET as string ;
 
 interface AuthenticatedUser{
   user_id: string;
@@ -19,7 +20,6 @@ export async function verifyToken(req: UserRequest,
 ): Promise<void> {
   try{
     const authHeader = req.headers["authorization"]
-    console.log("Authorization Header:", authHeader);
     const token= authHeader && authHeader.split(" ")[1]
     if (!token){
       res.status(401).json({message: 'Access not authorized'})
@@ -42,7 +42,6 @@ export async function verifyToken(req: UserRequest,
           email: decoded.email,
           role: decoded.role,
       } as AuthenticatedUser;
-        console.log("Token decodificado correctamente:", decoded);
         return next();
       }
       res.status(403).json({ message: 'Invalid token structure' });

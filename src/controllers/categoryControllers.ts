@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { CategoryModel } from "../models/categoryModel";
 
-
 class CategoryController{
     static async getAll(
         req: Request,

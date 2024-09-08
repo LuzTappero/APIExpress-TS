@@ -6,9 +6,8 @@ import { ProductModel } from '../models/productModel';
 interface CustomRequest extends Request{
     user?: {
         user_id: string;
+    }
 }
-}
-
 
 class OrderController {
     static async saveCart(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -62,7 +61,6 @@ class OrderController {
                 res.status(404).json({ message: 'No purchases found for this user.' });
                 return
             } 
-            console.log(userOrders)
             res.status(200).json(userOrders);
             return
         }catch(error){

@@ -8,7 +8,6 @@ interface CategoryAttributtes {
 }
 
 interface CategoryCreationAttributes extends Optional<CategoryAttributtes, 'category_id'> {}
-
 export class CategoryModel extends Model<CategoryAttributtes, CategoryCreationAttributes>
 implements CategoryAttributtes{
     public category_id!: number;

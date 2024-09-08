@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response, NextFunction} from 'express'
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import helmet from './node_modules/helmet/index.cjs';
@@ -10,13 +10,9 @@ import profileRoutes from './src/routes/profileRoutes'
 import productRoutes from './src/routes/productRoutes';
 import categoryRoutes from './src/routes/categoryRoutes';
 import orderRoutes from './src/routes/orderRoutes';
-import path from 'path';
 import './src/models/associations'
 
-
 const app = express()
-
-app.use('/images', express.static(path.join(__dirname, './images')));
 
 const TIMES: number = parseInt(process.env.TIMES || '900000', 10)
 const MAX: number = parseInt(process.env.MAX || '100', 10);
@@ -27,7 +23,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 
 dotenv.config()
-app.use(morgan("dev"))
+
+app.use(morgan("dev", {
+    skip: (req: Request, res: Response) => res.statusCode === 304,
+}));
+
 app.use(helmet());
 
 

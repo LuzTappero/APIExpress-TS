@@ -26,8 +26,7 @@ export class OrderItemModel extends Model<OrderItemAttributes, OrderCreationAttr
         public price!: number;
         public created_at?: Date;
         public updated_at?: Date;
-    }
-
+}
 
 OrderItemModel.init(
 {
